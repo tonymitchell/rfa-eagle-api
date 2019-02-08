@@ -1,0 +1,11 @@
+<DeviceList>
+  <Device>
+    <HardwareAddress>0x0007810000123456</HardwareAddress>
+    <Manufacturer>Generic</Manufacturer>
+    <ModelId>electric_meter</ModelId>
+    <Protocol>Zigbee</Protocol>
+    <LastContact>0x5c5aff97</LastContact>
+    <ConnectionStatus>Connected</ConnectionStatus>
+    <NetworkAddress>0x0000</NetworkAddress>
+  </Device>
+</DeviceList>

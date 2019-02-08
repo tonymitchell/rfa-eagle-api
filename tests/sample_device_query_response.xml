@@ -1,0 +1,280 @@
+<Device>
+  <DeviceDetails>
+    <Name>Power Meter</Name>
+    <HardwareAddress>0x0007810000123456</HardwareAddress>
+    <NetworkInterface>0xd8d5b90000001234</NetworkInterface>
+    <Protocol>Zigbee</Protocol>
+    <NetworkAddress>0x0000</NetworkAddress>
+    <Manufacturer>Generic</Manufacturer>
+    <ModelId>electric_meter</ModelId>
+    <LastContact>0x5c5aff97</LastContact>
+    <ConnectionStatus>Connected</ConnectionStatus>
+  </DeviceDetails>
+  <Components>
+    <Component>
+      <HardwareId></HardwareId>
+      <FixedId>0</FixedId>
+      <Name>Main</Name>
+      <Variables>
+        <Variable>
+          <Name>zigbee:InstantaneousDemand</Name>
+          <Value>2.790000</Value>
+          <Units>kW</Units>
+          <Description>Instantaneous Demand</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Multiplier</Name>
+          <Value>1</Value>
+          <Units></Units>
+          <Description>Multiplier applied to demand and summation values</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Divisor</Name>
+          <Value>1000</Value>
+          <Units></Units>
+          <Description>Divisor applied to demand and summation values</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:CurrentSummationDelivered</Name>
+          <Value>91937.250000</Value>
+          <Units>kWh</Units>
+          <Description>Summation Delivered to Home</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:CurrentSummationReceived</Name>
+          <Value>0.000000</Value>
+          <Units>kWh</Units>
+          <Description>Summation Received from Home</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Price</Name>
+          <Value>0.088400</Value>
+          <Units></Units>
+          <Description>Price of electricity</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:TrailingDigits</Name>
+          <Value>4</Value>
+          <Units></Units>
+          <Description>Indicates the number of digits to the right of the decimal point</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:RateLabel</Name>
+          <Value>Block 1</Value>
+          <Units></Units>
+          <Description>Active priuce rate label</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Currency</Name>
+          <Value>USD</Value>
+          <Units></Units>
+          <Description>The local unit of currency used in the price field</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:PriceTier</Name>
+          <Value>0</Value>
+          <Units></Units>
+          <Description>The current Price Tier</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:PriceStartTime</Name>
+          <Value>Wed Feb  6 15:37:59 2019</Value>
+          <Units></Units>
+          <Description>The time at which the price signal becomes valid</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:PriceDuration</Name>
+          <Value>-1</Value>
+          <Units>min</Units>
+          <Description>Amount of time in minutes after the Start Time during which the price signal is valid</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Message</Name>
+          <Value></Value>
+          <Units></Units>
+          <Description>Message from utility to customer</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:MessageId</Name>
+          <Value></Value>
+          <Units></Units>
+          <Description>Message unique ID</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:MessageStartTime</Name>
+          <Value></Value>
+          <Units></Units>
+          <Description>Start time for current message</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:MessageDurationInMinutes</Name>
+          <Value></Value>
+          <Units>min</Units>
+          <Description>Start time for current message</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:MessagePriority</Name>
+          <Value></Value>
+          <Units></Units>
+          <Description>Message priority</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:MessageConfirmationRequired</Name>
+          <Value>N</Value>
+          <Units></Units>
+          <Description>Indicates if the message requires user confirmation</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:MessageConfirmed</Name>
+          <Value>N</Value>
+          <Units></Units>
+          <Description>Indicates if the message has received user confirmation</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:BlockPeriodNumberOfBlocks</Name>
+          <Value>2</Value>
+          <Units></Units>
+          <Description></Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:BlockPeriodConsumption</Name>
+          <Value>531.646000</Value>
+          <Units>kWh</Units>
+          <Description>The most recent summed value of Energy, Gas or Water delivered and consumed in the premises during the Block Tariff Period</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block1Price</Name>
+          <Value>0.088400</Value>
+          <Units>USD/kWh</Units>
+          <Description>The price of Energy, Gas, or Water delivered to the premises at a specific price tier</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block2Price</Name>
+          <Value>0.132600</Value>
+          <Units>USD/kWh</Units>
+          <Description>The price of Energy, Gas, or Water delivered to the premises at a specific price tier</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block3Price</Name>
+          <Value></Value>
+          <Units>USD/kWh</Units>
+          <Description>The price of Energy, Gas, or Water delivered to the premises at a specific price tier</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block4Price</Name>
+          <Value></Value>
+          <Units>USD/kWh</Units>
+          <Description>The price of Energy, Gas, or Water delivered to the premises at a specific price tier</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block5Price</Name>
+          <Value></Value>
+          <Units>USD/kWh</Units>
+          <Description>The price of Energy, Gas, or Water delivered to the premises at a specific price tier</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block6Price</Name>
+          <Value></Value>
+          <Units>USD/kWh</Units>
+          <Description>The price of Energy, Gas, or Water delivered to the premises at a specific price tier</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block7Price</Name>
+          <Value></Value>
+          <Units>USD/kWh</Units>
+          <Description>The price of Energy, Gas, or Water delivered to the premises at a specific price tier</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block8Price</Name>
+          <Value></Value>
+          <Units>USD/kWh</Units>
+          <Description>The price of Energy, Gas, or Water delivered to the premises at a specific price tier</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block1Threshold</Name>
+          <Value>1354.000000</Value>
+          <Units>kWh</Units>
+          <Description>the block threshold values for a given period (typically the billing cycle)</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block2Threshold</Name>
+          <Value></Value>
+          <Units>kWh</Units>
+          <Description>the block threshold values for a given period (typically the billing cycle)</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block3Threshold</Name>
+          <Value></Value>
+          <Units>kWh</Units>
+          <Description>the block threshold values for a given period (typically the billing cycle)</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block4Threshold</Name>
+          <Value></Value>
+          <Units>kWh</Units>
+          <Description>the block threshold values for a given period (typically the billing cycle)</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block5Threshold</Name>
+          <Value></Value>
+          <Units>kWh</Units>
+          <Description>the block threshold values for a given period (typically the billing cycle)</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block6Threshold</Name>
+          <Value></Value>
+          <Units>kWh</Units>
+          <Description>the block threshold values for a given period (typically the billing cycle)</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block7Threshold</Name>
+          <Value></Value>
+          <Units>kWh</Units>
+          <Description>the block threshold values for a given period (typically the billing cycle)</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:Block8Threshold</Name>
+          <Value></Value>
+          <Units>kWh</Units>
+          <Description>the block threshold values for a given period (typically the billing cycle)</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:BlockPeriodStart</Name>
+          <Value>1548316764</Value>
+          <Units></Units>
+          <Description>The start time of the current block tariff period</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:BlockPeriodDuration</Name>
+          <Value>62860</Value>
+          <Units>min</Units>
+          <Description>The current block tariff period duration in minutes</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:BlockThresholdMultiplier</Name>
+          <Value>1</Value>
+          <Units></Units>
+          <Description>Provides a value to be multiplied against Threshold attributes</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:BlockThresholdDivisor</Name>
+          <Value>1</Value>
+          <Units></Units>
+          <Description>Provides a value to divide the result of applying the threshold multiplier attribute to Block Threshold values</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:BillingPeriodStart</Name>
+          <Value>1548316764</Value>
+          <Units></Units>
+          <Description>The start time of the current billing period</Description>
+        </Variable>
+        <Variable>
+          <Name>zigbee:BillingPeriodDuration</Name>
+          <Value>87840</Value>
+          <Units>min</Units>
+          <Description>The current billing period duration in minutes</Description>
+        </Variable>
+      </Variables>
+    </Component>
+  </Components>
+</Device>
