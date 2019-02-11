@@ -13,7 +13,7 @@ setuptools.setup(
     long_description_content_type='text/x-rst',
     url='https://github.com/tonymitchell/rfa-eagle-api',
     license='MIT',
-    install_requires=['requests','lxml'],
+    install_requires=['requests','lxml','inflection'],
     setup_requires=['pytest-runner'],
     tests_require=['pytest'],
     test_suite='tests',

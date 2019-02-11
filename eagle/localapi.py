@@ -7,6 +7,9 @@ from lxml import etree
 import json
 import logging
 from typing import List
+from datetime import datetime
+import inflection
+from .const import VAR_INSTANTANEOUSDEMAND
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -48,12 +51,26 @@ class WifiStatus:
     <Key>0123456789abcdef</Key>
     </WiFiStatus>        
     """
-    def __init__(self, attributes):
-        self.attributes = attributes
+    def __init__(self, enabled, type, ssid, encryption, encryption_details, channel, ip_address, key):
+        self._enabled = enabled
+        self._type = type
+        self._ssid = ssid
+        self._encryption = encryption
+        self._encryption_details = encryption_details
+        self._channel = channel
+        self._ip_address = ip_address
+        self._key = key
 
     def __repr__(self):
         return (f"{self.__class__.__name__}("
-                f"{self.attributes!r}"
+                f"{self.enabled!r}, "
+                f"{self.type!r}, "
+                f"{self.ssid!r}, "
+                f"{self.encryption!r}, "
+                f"{self.encryption_details!r}, "
+                f"{self.channel!r}, "
+                f"{self.ip_address!r}, "
+                f"{self.key!r}"
                 ")"
                 )
 
@@ -61,28 +78,28 @@ class WifiStatus:
     @property
     def enabled(self):
         """ Return True if Wifi enable, otherwise false """
-        return self.attributes.get('Enabled') == 'Y'
+        return self._enabled
     @property
     def type(self):
-        return self.attributes.get('Type')
+        return self._type
     @property
     def ssid(self):
-        return self.attributes.get('SSID')
+        return self._ssid
     @property
     def encryption(self):
-        return self.attributes.get('Encryption')
+        return self._encryption
     @property
     def encryption_details(self):
-        return self.attributes.get('EncryptionDetails')
+        return self._encryption_details
     @property
     def channel(self):
-        return self.attributes.get('Channel')
+        return self._channel
     @property
     def ip_address(self):
-        return self.attributes.get('IpAddress')
+        return self._ip_address
     @property
     def key(self):
-        return self.attributes.get('Key')
+        return self._key
 
 
 
@@ -144,24 +161,33 @@ class Component:
 
 
 class Device:
-    """
-    <Name>Power Meter</Name>
-    <HardwareAddress>0x0007810000123456</HardwareAddress>
-    <NetworkInterface>0xd8d5b90000001234</NetworkInterface>
-    <Protocol>Zigbee</Protocol>
-    <NetworkAddress>0x0000</NetworkAddress>
-    <Manufacturer>Generic</Manufacturer>
-    <ModelId>electric_meter</ModelId>
-    <LastContact>0x5c4ea428</LastContact>
-    <ConnectionStatus>Connected</ConnectionStatus>
-    """
-    def __init__(self, attributes, components = []):
-        self.attributes = attributes
+    """ """
+    def __init__(self, 
+                 name='', hardware_address='', network_interface='', protocol='', network_address='', 
+                 manufacturer='', model_id='', last_contact='', connection_status='', 
+                 components = []):
+        self._name=name
+        self._hardware_address=hardware_address
+        self._network_interface=network_interface
+        self._protocol=protocol
+        self._network_address=network_address
+        self._manufacturer=manufacturer
+        self._model_id=model_id
+        self._last_contact=last_contact
+        self._connection_status=connection_status
         self._components = components
 
     def __repr__(self):
         return (f"{self.__class__.__name__}("
-                f"{self.attributes!r}, "
+                f"{self.name!r}, "
+                f"{self.hardware_address!r}, "
+                f"{self.network_interface!r}, "
+                f"{self.protocol!r}, "
+                f"{self.network_address!r}, "
+                f"{self.manufacturer!r}, "
+                f"{self.model_id!r}, "
+                f"{self.last_contact!r}, "
+                f"{self.connection_status!r}, "
                 f"{self._components!r}"
                 ")"
                 )
@@ -192,44 +218,45 @@ class Device:
     # Properties
     @property
     def name(self):
-        return self.attributes.get('Name')
+        return self._name
     @property
     def hardware_address(self):
-        return self.attributes.get('HardwareAddress')
+        """MAC Address of the device"""
+        return self._hardware_address
     @property
     def network_interface(self):
-        return self.attributes.get('NetworkInterface')
+        """MAC Address of the EAGLE device""" 
+        return self._network_interface
     @property
     def protocol(self):
-        return self.attributes.get('Protocol')
+        return self._protocol
     @property
     def network_address(self):
-        return self.attributes.get('NetworkAddress')
+        return self._network_address
     @property
     def manufacturer(self):
-        return self.attributes.get('Manufacturer')
+        return self._manufacturer
     @property
     def model_id(self):
-        return self.attributes.get('ModelId')
+        return self._model_id
     @property
     def last_contact(self):
-        return self.attributes.get('LastContact')
+        return self._last_contact
     @property
     def connection_status(self):
-        return self.attributes.get('ConnectionStatus')
+        return self._connection_status
 
     @property
     def components(self) -> List[Component]:
         return self._components
 
 
-
-
-
-
 #
 # Response model parsers
 #
+
+def _date_from_hex(hex_timestamp):
+    return datetime.fromtimestamp(int(hex_timestamp, 16))
 
 def _safe_text(variable):
     if variable is not None:
@@ -255,13 +282,33 @@ def parse_device_list(device_root):
     return devices
 
 def parse_device(device):
-    """ Parse Device XML block into object """
+    """Parse Device XML block into object. Supports block with properties as
+    both direct children elements, and nested under a DeviceDetails element
+
+    <Name>Power Meter</Name>
+    <HardwareAddress>0x0007810000123456</HardwareAddress>
+    <NetworkInterface>0xd8d5b90000001234</NetworkInterface>
+    <Protocol>Zigbee</Protocol>
+    <NetworkAddress>0x0000</NetworkAddress>
+    <Manufacturer>Generic</Manufacturer>
+    <ModelId>electric_meter</ModelId>
+    <LastContact>0x5c4ea428</LastContact>
+    <ConnectionStatus>Connected</ConnectionStatus>
+    """
+
+    # Elements are either direct children or nested under a DeviceDetails element
     details = device.find("DeviceDetails")
     if details is None:
         details = device
-    attributes = {x.tag:x.text for x in details}
+
+    # Convert tags to property names
+    attributes = {inflection.underscore(x.tag):x.text for x in details}
+    # Convert last_contact to datetime
+    if 'last_contact' in attributes:
+        attributes['last_contact'] = _date_from_hex(attributes['last_contact'])
+
     components = [parse_component(comp) for comp in device.findall("Components/Component")]
-    return Device(attributes, components)
+    return Device(**attributes, components=components)
 
 def parse_component(component):
     """ Parse Component XML block into object """
@@ -293,8 +340,14 @@ def parse_variable(variable):
 
 def parse_wifi_status(wifi_status):
     """ Parse WiFiStatus XML block into object """
-    attributes = {x.tag:x.text for x in wifi_status}
-    return WifiStatus(attributes)
+
+    # Convert tags to property names
+    attributes = {inflection.underscore(x.tag):x.text for x in wifi_status}
+    # Convert enabled to datetime
+    if 'enabled' in attributes:
+        attributes['enabled'] = (attributes['enabled']  == 'Y')
+
+    return WifiStatus(**attributes)
 
 
 
@@ -315,8 +368,11 @@ class LocalApi(object):
         self.timeout = timeout
 
     def _call(self, command):
+        # requests.exceptions.ConnectTimeout - Can't reach host
+
         """ Call service """
-        response = requests.post(url=self.url, data=command, headers={'Content-Type':'text/xml'}, auth=(self.username, self.password), verify=False, timeout=self.timeout)
+        response = requests.post(url=self.url, data=command, headers={'Content-Type':'text/xml'}, 
+                                 auth=(self.username, self.password), verify=False, timeout=self.timeout)
         response.raise_for_status()
     
         # with open("response_log.ndxml", "a") as log:
@@ -399,7 +455,6 @@ class LocalApi(object):
         return device
                             
 
-
     # def device_add(self, network_interface, device_details):
     #     pass
 
@@ -432,12 +487,12 @@ class Meter:
         """
         Re-query device for updated values
         """
-        self._device = self._api.device_query(self._hardware_address, {'Main':['zigbee:InstantaneousDemand']})
+        self._device = self._api.device_query(self._hardware_address, {'Main':[VAR_INSTANTANEOUSDEMAND]})
 
     @property
     def instantaneous_demand(self):
         """
         Get the instaneous demand (kW)
         """
-        return self._device.get_variable('zigbee:InstantaneousDemand')
+        return self._device.get_variable(VAR_INSTANTANEOUSDEMAND)
 
