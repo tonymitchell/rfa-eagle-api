@@ -5,7 +5,7 @@ with open('README.rst', 'r') as rm:
 
 setuptools.setup(
     name='rfa-eagle-api',
-    version='0.0.1',
+    version='0.0.2',
     author='Tony Mitchell',
     author_email='tony.mitchell@live.ca',
     description='Unofficial client SDK for Rainforest Automation Eagle-200',
