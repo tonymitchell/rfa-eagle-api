@@ -1,20 +1,14 @@
 from eagle.localapi import parse_response
+from eagle.const import *
 #
 # Test parsing
 #
 
-# def parse_response(response_text):
-#     root = etree.fromstring(response_text)
-#     if root.tag == 'DeviceList':
-#         response = parse_device_list(root)
-#     elif root.tag == 'Device':
-#         response = parse_device(root)
-#     elif root.tag == 'WiFiStatus':
-#         response = parse_wifi_status(root)
-#     else:
-#         response = None
-#         print('WARN: Unknown tag: ', root.tag)
-#     return response
+
+def test_parse_unknown_tag():
+    xml = '<NotAValidTag></NotAValidTag>'
+    r = parse_response(xml)
+    assert r is None
 
 def test_parse_device_list():
     xml = '<DeviceList><Device></Device></DeviceList>'
@@ -53,8 +47,8 @@ def test_parse_device_query_sample():
     r = parse_response(xml)
     assert r.__class__.__name__ == 'Device'
     assert r.hardware_address == '0x0007810000123456'
-    assert r.get_variable('zigbee:InstantaneousDemand').value == '2.790000'
-    assert r.get_variable('zigbee:InstantaneousDemand').units == 'kW'
-    assert r.get_variable('zigbee:CurrentSummationDelivered').value == '91937.250000'
-    assert r.get_variable('zigbee:Price').value == '0.088400'
-    assert r.get_variable('zigbee:Price').description == 'Price of electricity'
+    assert r.get_variable(VAR_INSTANTANEOUSDEMAND).value == '2.790000'
+    assert r.get_variable(VAR_INSTANTANEOUSDEMAND).units == 'kW'
+    assert r.get_variable(VAR_CURRENTSUMMATIONDELIVERED).value == '91937.250000'
+    assert r.get_variable(VAR_PRICE).value == '0.088400'
+    assert r.get_variable(VAR_PRICE).description == 'Price of electricity'

@@ -51,7 +51,7 @@ class WifiStatus:
     <Key>0123456789abcdef</Key>
     </WiFiStatus>        
     """
-    def __init__(self, enabled, type, ssid, encryption, encryption_details, channel, ip_address, key):
+    def __init__(self, enabled = False, type ='', ssid ='', encryption ='', encryption_details ='', channel ='', ip_address = '', key = ''):
         self._enabled = enabled
         self._type = type
         self._ssid = ssid
@@ -273,7 +273,7 @@ def parse_response(response_text):
         response = parse_wifi_status(root)
     else:
         response = None
-        print('WARN: Unknown tag: ', root.tag)
+        _LOGGER.error('Unknown tag: %s', root.tag)
     return response
 
 def parse_device_list(device_root):
@@ -368,8 +368,6 @@ class LocalApi(object):
         self.timeout = timeout
 
     def _call(self, command):
-        # requests.exceptions.ConnectTimeout - Can't reach host
-
         """ Call service """
         response = requests.post(url=self.url, data=command, headers={'Content-Type':'text/xml'}, 
                                  auth=(self.username, self.password), verify=False, timeout=self.timeout)
