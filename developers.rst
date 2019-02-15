@@ -47,20 +47,31 @@ Deploying the library to PyPI
 
 See https://packaging.python.org/tutorials/packaging-projects/ for details.
 
-**1. Build source and binary distributions**
+
+**1. Create new release and tag it
+
+Edit setup.py and update the version number to new version.  Then tag the release and push it to GitHub.
+
+.. code-block:: bat
+
+    git tag -a -m "Version x.y.z" vx.y.z
+    git push --tags
+
+**2. Build source and binary distributions**
 
 .. code-block:: bat
 
     python setup.py sdist bdist_wheel
 
 
-**2. Check distributions for errors
+**3. Check distributions for errors
 
 .. code-block:: bat
     python -m twine check dist/*
 
-**3. Upload new distribution versions to PyPI.org**
+**4. Upload new distribution versions to PyPI.org**
 
 .. code-block:: bat
 
     python -m twine upload dist/*
+
