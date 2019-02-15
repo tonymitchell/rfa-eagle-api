@@ -69,17 +69,9 @@ class WifiStatus:
         self._key = key
 
     def __repr__(self):
-        return (f"{self.__class__.__name__}("
-                f"{self.enabled!r}, "
-                f"{self.type!r}, "
-                f"{self.ssid!r}, "
-                f"{self.encryption!r}, "
-                f"{self.encryption_details!r}, "
-                f"{self.channel!r}, "
-                f"{self.ip_address!r}, "
-                f"{self.key!r}"
-                ")"
-                )
+        attrs = ("enabled", "type", "ssid", "encryption", "encryption_details", "channel","ip_address","key")
+        args = ", ".join(["%s=%r" % (n, getattr(self, n)) for n in attrs])
+        return "%s(%s)" % (self.__class__.__name__, args)
 
     # Properties
     @property
@@ -126,13 +118,10 @@ class Variable:
         self._description = description
 
     def __repr__(self):
-        return (f"{self.__class__.__name__}("
-                f"{self.name!r}, "
-                f"{self.value!r}, "
-                f"{self.units!r}, "
-                f"{self.description!r}"
-                ")"
-                )
+        attrs = ("name", "value", "units", "description")
+        args = ", ".join(["%s=%r" % (n, getattr(self, n)) for n in attrs])
+        return "%s(%s)" % (self.__class__.__name__, args)
+
 
     @property
     def name(self):
@@ -154,11 +143,10 @@ class Component:
         self.variables = variables
 
     def __repr__(self):
-        return (f"{self.__class__.__name__}("
-                f"{self.name!r}, "
-                f"{self.variables!r}"
-                ")"
-                )
+        attrs = ("name", "variables")
+        args = ", ".join(["%s=%r" % (n, getattr(self, n)) for n in attrs])
+        return "%s(%s)" % (self.__class__.__name__, args)
+
 
     def get_variable(self, name) -> Variable:
         for variable in self.variables:
@@ -185,19 +173,11 @@ class Device:
         self._components = components
 
     def __repr__(self):
-        return (f"{self.__class__.__name__}("
-                f"{self.name!r}, "
-                f"{self.hardware_address!r}, "
-                f"{self.network_interface!r}, "
-                f"{self.protocol!r}, "
-                f"{self.network_address!r}, "
-                f"{self.manufacturer!r}, "
-                f"{self.model_id!r}, "
-                f"{self.last_contact!r}, "
-                f"{self.connection_status!r}, "
-                f"{self._components!r}"
-                ")"
-                )
+        attrs = ("name", "hardware_address", "network_interface", "protocol", "network_address", 
+                 "manufacturer", "model_id", "last_contact", "connection_status", "components")
+        args = ", ".join(["%s=%r" % (n, getattr(self, n)) for n in attrs])
+        return "%s(%s)" % (self.__class__.__name__, args)
+
 
     def get_variable(self, name) -> Variable:
         for component in self.components:
@@ -369,7 +349,7 @@ class LocalApi(object):
     """
     def __init__(self, host, username, password, timeout=5):
         self.host = host
-        self.url = f"http://{host}/cgi-bin/post_manager"
+        self.url = "http://{0}/cgi-bin/post_manager".format(host)
         self.username = username
         self.password = password
         self.timeout = timeout
@@ -389,20 +369,20 @@ class LocalApi(object):
     def _build_command(self, command_name, hardware_address = '', comp_var_dict = None):
         """ Build command body from parameters """
         # Start command adn set name
-        command = f"<Command><Name>{command_name}</Name>"
+        command = "<Command><Name>{command_name}</Name>".format(command_name=command_name)
 
         if hardware_address:
-            command += f"<DeviceDetails><HardwareAddress>{hardware_address}</HardwareAddress></DeviceDetails>"
+            command += "<DeviceDetails><HardwareAddress>{hardware_address}</HardwareAddress></DeviceDetails>".format(hardware_address=hardware_address)
 
         if comp_var_dict is not None:
             comp_keys = comp_var_dict.keys()
             if len(comp_keys) > 0:
                 for comp_key in comp_keys:
                     # Build requested variable list
-                    command += f"<Components><Component><Name>{comp_key}</Name><Variables>"
+                    command += "<Components><Component><Name>{comp_key}</Name><Variables>".format(comp_key=comp_key)
                     variables = comp_var_dict[comp_key]
                     for var in variables:
-                        command += f"<Variable><Name>{var}</Name></Variable>"
+                        command += "<Variable><Name>{var}</Name></Variable>".format(var=var)
                     command += "</Variables></Component></Components>"
             else:
                 # Request all variables from all components
