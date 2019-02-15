@@ -6,3 +6,7 @@ HOST=''
 USERNAME=''
 # Password (Install Code)
 PASSWORD=''
+
+if HOST == '' or USERNAME == '' or PASSWORD == '':
+    print("ERROR: EAGLE login configuration has not been set.")
+    exit(1)

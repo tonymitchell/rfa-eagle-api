@@ -2,14 +2,21 @@
 # Unofficial client for the Rainforest Automation EAGLE-200 
 #
 
-import requests
-from lxml import etree
+from typing import List
+
+import collections
 import json
 import logging
-from typing import List
-from datetime import datetime
+from lxml import etree
+import requests
 import inflection
-from .const import VAR_INSTANTANEOUSDEMAND
+from datetime import datetime, timezone
+
+from .const import (
+    VAR_INSTANTANEOUSDEMAND,VAR_CURRENTSUMMATIONDELIVERED, VAR_CURRENTSUMMATIONRECEIVED, VAR_PRICE, VAR_RATELABEL, 
+    VAR_PRICETIER, VAR_PRICESTARTTIME, VAR_PRICEDURATION, VAR_BLOCKPERIODNUMBEROFBLOCKS, VAR_BLOCKNPRICE, VAR_BLOCKNTHRESHOLD,
+    VAR_BLOCKPERIODSTART, VAR_BLOCKPERIODDURATION, VAR_BLOCKPERIODCONSUMPTION, VAR_BILLINGPERIODSTART, VAR_BILLINGPERIODDURATION
+    )
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -463,15 +470,16 @@ class LocalApi(object):
 #
 # High-level, simplified API for ease-of-use
 #
+
+PriceBlock = collections.namedtuple('PriceBlock', ['price', 'threshold'])
+
 class Meter:
     """
     Represents an individual meter
     """
     @staticmethod
     def get_meters(api):
-        """
-        Fetch a list of electric meters
-        """
+        """ Fetch a list of electric meters """
         devices = api.device_list()
         return [Meter(api, device.hardware_address) for device in devices if device.model_id == 'electric_meter']
 
@@ -479,18 +487,112 @@ class Meter:
     def __init__(self, api, hardware_address):
         self._api = api
         self._hardware_address = hardware_address
-        self._device = api.device_details(self._hardware_address)
+        self.update()
     
     def update(self):
-        """
-        Re-query device for updated values
-        """
-        self._device = self._api.device_query(self._hardware_address, {'Main':[VAR_INSTANTANEOUSDEMAND]})
+        """ Re-query device for updated values """
+        self.device = self._api.device_query(self._hardware_address, {})
+
+    def _safe_value(self, var_name, type_formatter = None):
+        var = self.device.get_variable(var_name)
+        if var is not None:
+            if type_formatter is not None:
+                return type_formatter(var.value)
+            else:
+                return var.value
+        return None
+
 
     @property
     def instantaneous_demand(self):
-        """
-        Get the instaneous demand (kW)
-        """
-        return self._device.get_variable(VAR_INSTANTANEOUSDEMAND)
+        """ Instaneous demand (kW) """
+        return self._safe_value(VAR_INSTANTANEOUSDEMAND, float)
+        
+    @property
+    def current_summation_delivered(self):
+        """ Summation Delivered to Home (kWh) """
+        return self._safe_value(VAR_CURRENTSUMMATIONDELIVERED, float)
 
+    @property
+    def current_summation_received(self):
+        """ Summation Received from Home (kWh) """
+        return self._safe_value(VAR_CURRENTSUMMATIONRECEIVED, float)
+
+    @property
+    def price(self):
+        """ Price of electricity (kW) """
+        return self._safe_value(VAR_PRICE, float)
+
+    @property
+    def rate_label(self):
+        """ Active price rate label """
+        return self._safe_value(VAR_RATELABEL, str)
+
+    @property
+    def price_tier(self):
+        """ The current Price Tier """
+        return self._safe_value(VAR_PRICETIER, str)
+
+    @property
+    def price_start_time(self): #ISO8601 or timestamp
+        """ The time at which the price signal becomes valid """
+
+        try:
+            # Devices returns UTC date string (e.g. 'Wed Feb 13 06:32:47 2019')
+            dtm_str = self._safe_value(VAR_PRICESTARTTIME)
+            # Parse date string
+            dtm = datetime.strptime(dtm_str, "%c")
+            # Get UTC timestamp
+            timestamp = dtm.replace(tzinfo=timezone.utc).timestamp()
+
+            return int(timestamp)
+        except ValueError:
+            _LOGGER.warning("Error parsing price_start_time value: %s", dtm_str)
+            return None
+
+    @property
+    def price_duration(self):
+        """ Amount of time in minutes after the Start Time during which the price signal is valid (min) """
+        return self._safe_value(VAR_PRICEDURATION, int)
+
+    @property
+    def blocks(self): # (list of size: block_period_number_of_blocks)
+        """ The price of Energy, Gas, or Water delivered to the premises at a specific price tier 
+            the block threshold values for a given period (typically the billing cycle)
+        """
+        blocks = []
+
+        numblocks = self._safe_value(VAR_BLOCKPERIODNUMBEROFBLOCKS, int)
+        if numblocks is not None:
+            for i in range(1, numblocks + 1):
+                price = self._safe_value(VAR_BLOCKNPRICE.format(i), float)
+                threshold = self._safe_value(VAR_BLOCKNTHRESHOLD.format(i), float)
+
+                blocks.append(PriceBlock(price, threshold))
+
+        return blocks
+
+    @property
+    def block_period_start(self): # ISO8601 or timestamp
+        """ The start time of the current block tariff period """
+        return self._safe_value(VAR_BLOCKPERIODSTART, int)
+
+    @property
+    def block_period_duration(self):
+        """ The current block tariff period duration in minutes """
+        return self._safe_value(VAR_BLOCKPERIODDURATION, int)
+
+    @property
+    def block_period_consumption(self):
+        """ The most recent summed value of Energy, Gas or Water delivered and consumed in the premises during the Block Tariff Period (kWh) """
+        return self._safe_value(VAR_BLOCKPERIODCONSUMPTION, float)
+
+    @property
+    def billing_period_start(self):  # ISO8601 or timestamp
+        """ The start time of the current billing period """
+        return self._safe_value(VAR_BILLINGPERIODSTART, int)
+
+    @property
+    def billing_period_duration(self):
+        """ The current billing period duration in minutes (min) """
+        return self._safe_value(VAR_BILLINGPERIODDURATION, int)
