@@ -34,22 +34,22 @@ def test_wifi_status_repr():
         'key': '0000000000000000',
     }
     status = WifiStatus(**attributes)
-    assert repr(status) == "WifiStatus(False, 'router', 'eagle-00abcd (router)', 'psk2', 'none', 'unknown', '192.168.7.1', '0000000000000000')"
+    assert repr(status) == "WifiStatus(enabled=False, type='router', ssid='eagle-00abcd (router)', encryption='psk2', encryption_details='none', channel='unknown', ip_address='192.168.7.1', key='0000000000000000')"
 
 def test_variable_repr():
     variable = Variable('aName', 'aValue', 'theUnits', 'the description')
-    
-    assert repr(variable) == "Variable('aName', 'aValue', 'theUnits', 'the description')"
+
+    assert repr(variable) == "Variable(name='aName', value='aValue', units='theUnits', description='the description')"
 
 def test_component_repr():
     variable = Component('aName', [Variable('var1', 1), Variable('var2', 2)])
 
-    assert repr(variable) == "Component('aName', [Variable('var1', 1, '', ''), Variable('var2', 2, '', '')])"
+    assert repr(variable) == "Component(name='aName', variables=[Variable(name='var1', value=1, units='', description=''), Variable(name='var2', value=2, units='', description='')])"
 
 def test_device_repr():
     variable = Device(name='dName', hardware_address='dHwAddress', network_interface='dNetInf', protocol='dProt', network_address='dNetAddr', 
                       manufacturer='dMan', model_id='dMod', last_contact='dLastCont', connection_status='dConnStatus',
                       components=Component('aName', [Variable('var1', 1), Variable('var2', 2)]))
 
-    assert repr(variable) == "Device('dName', 'dHwAddress', 'dNetInf', 'dProt', 'dNetAddr', 'dMan', 'dMod', 'dLastCont', 'dConnStatus', Component('aName', [Variable('var1', 1, '', ''), Variable('var2', 2, '', '')]))"
+    assert repr(variable) == "Device(name='dName', hardware_address='dHwAddress', network_interface='dNetInf', protocol='dProt', network_address='dNetAddr', manufacturer='dMan', model_id='dMod', last_contact='dLastCont', connection_status='dConnStatus', components=Component(name='aName', variables=[Variable(name='var1', value=1, units='', description=''), Variable(name='var2', value=2, units='', description='')]))"
 
