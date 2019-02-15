@@ -1,6 +1,10 @@
-*************
+=============
 RFA-Eagle-API
-*************
+=============
+
+.. image:: https://travis-ci.com/tonymitchell/rfa-eagle-api.svg?branch=master
+  :target: https://travis-ci.com/tonymitchell/rfa-eagle-api
+
 
 Unofficial client for Eagle-200 from Rainforest Automation
 =======================================================
