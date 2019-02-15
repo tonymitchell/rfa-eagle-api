@@ -41,6 +41,7 @@ Linux
     
     python setup.py test
 
+
 Deploying the library to PyPI
 -----------------------------
 
@@ -52,7 +53,13 @@ See https://packaging.python.org/tutorials/packaging-projects/ for details.
 
     python setup.py sdist bdist_wheel
 
-**2. Upload new distribution versions to PyPI.org**
+
+**2. Check distributions for errors
+
+.. code-block:: bat
+    python -m twine check dist/*
+
+**3. Upload new distribution versions to PyPI.org**
 
 .. code-block:: bat
 

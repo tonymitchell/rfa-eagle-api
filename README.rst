@@ -7,12 +7,13 @@ RFA-Eagle-API
 
 
 Unofficial client for Eagle-200 from Rainforest Automation
-=======================================================
+==========================================================
 
 Provides the ability to query the local API interface of the Eagle-200
 
 **Example 1. Query and print all variables from device**
 ::
+
   import eagle
 
   client = eagle.LocalApi(host='<device ip>', username='<Cloud ID>', password='<Install Code>')
@@ -23,6 +24,7 @@ Provides the ability to query the local API interface of the Eagle-200
 
 **Example 2. Use Meter wrapper class for simplified access to electricity meter data**
 ::
+
   import eagle
 
   client = eagle.LocalApi(host='<device ip>', username='<Cloud ID>', password='<Install Code>')
