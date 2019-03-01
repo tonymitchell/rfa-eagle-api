@@ -15,7 +15,15 @@ from datetime import datetime, timezone
 from .const import (
     VAR_INSTANTANEOUSDEMAND,VAR_CURRENTSUMMATIONDELIVERED, VAR_CURRENTSUMMATIONRECEIVED, VAR_PRICE, VAR_RATELABEL, 
     VAR_PRICETIER, VAR_PRICESTARTTIME, VAR_PRICEDURATION, VAR_BLOCKPERIODNUMBEROFBLOCKS, VAR_BLOCKNPRICE, VAR_BLOCKNTHRESHOLD,
-    VAR_BLOCKPERIODSTART, VAR_BLOCKPERIODDURATION, VAR_BLOCKPERIODCONSUMPTION, VAR_BILLINGPERIODSTART, VAR_BILLINGPERIODDURATION
+    VAR_BLOCKPERIODSTART, VAR_BLOCKPERIODDURATION, VAR_BLOCKPERIODCONSUMPTION, VAR_BILLINGPERIODSTART, VAR_BILLINGPERIODDURATION,
+    VAR_BLOCK1PRICE, VAR_BLOCK1THRESHOLD,
+    VAR_BLOCK2PRICE, VAR_BLOCK2THRESHOLD,
+    VAR_BLOCK3PRICE, VAR_BLOCK3THRESHOLD,
+    VAR_BLOCK4PRICE, VAR_BLOCK4THRESHOLD,
+    VAR_BLOCK5PRICE, VAR_BLOCK5THRESHOLD,
+    VAR_BLOCK6PRICE, VAR_BLOCK6THRESHOLD,
+    VAR_BLOCK7PRICE, VAR_BLOCK7THRESHOLD,
+    VAR_BLOCK8PRICE, VAR_BLOCK8THRESHOLD,
     )
 
 _LOGGER = logging.getLogger(__name__)
@@ -474,9 +482,10 @@ class Meter:
         self.device = self._api.device_query(self._hardware_address, {})
 
     def _safe_value(self, var_name, type_formatter = None):
+        """ Get device variable value by name """
         var = self.device.get_variable(var_name)
         if var is not None:
-            if type_formatter is not None:
+            if type_formatter is not None and var.value is not None:
                 return type_formatter(var.value)
             else:
                 return var.value
@@ -536,23 +545,6 @@ class Meter:
         return self._safe_value(VAR_PRICEDURATION, int)
 
     @property
-    def blocks(self): # (list of size: block_period_number_of_blocks)
-        """ The price of Energy, Gas, or Water delivered to the premises at a specific price tier 
-            the block threshold values for a given period (typically the billing cycle)
-        """
-        blocks = []
-
-        numblocks = self._safe_value(VAR_BLOCKPERIODNUMBEROFBLOCKS, int)
-        if numblocks is not None:
-            for i in range(1, numblocks + 1):
-                price = self._safe_value(VAR_BLOCKNPRICE.format(i), float)
-                threshold = self._safe_value(VAR_BLOCKNTHRESHOLD.format(i), float)
-
-                blocks.append(PriceBlock(price, threshold))
-
-        return blocks
-
-    @property
     def block_period_start(self): # ISO8601 or timestamp
         """ The start time of the current block tariff period """
         return self._safe_value(VAR_BLOCKPERIODSTART, int)
@@ -576,3 +568,103 @@ class Meter:
     def billing_period_duration(self):
         """ The current billing period duration in minutes (min) """
         return self._safe_value(VAR_BILLINGPERIODDURATION, int)
+
+
+    @property
+    def blocks(self): # (list of size: block_period_number_of_blocks)
+        """ The price of Energy, Gas, or Water delivered to the premises at a specific price tier 
+            the block threshold values for a given period (typically the billing cycle)
+        """
+        blocks = []
+
+        numblocks = self._safe_value(VAR_BLOCKPERIODNUMBEROFBLOCKS, int)
+        if numblocks is not None:
+            for i in range(1, numblocks + 1):
+                price = self._safe_value(VAR_BLOCKNPRICE.format(i), float)
+                threshold = self._safe_value(VAR_BLOCKNTHRESHOLD.format(i), float)
+
+                blocks.append(PriceBlock(price, threshold))
+
+        return blocks
+
+    # Explicit block properties as well
+    @property
+    def block1_price(self):
+        """ The price of Energy, Gas, or Water delivered to the premises at a specific price tier  """
+        return self._safe_value(VAR_BLOCK1PRICE, float)
+
+    @property
+    def block1_threshold(self):
+        """ The block threshold values for a given period (typically the billing cycle)  """
+        return self._safe_value(VAR_BLOCK1THRESHOLD, float)
+
+    @property
+    def block2_price(self):
+        """ The price of Energy, Gas, or Water delivered to the premises at a specific price tier  """
+        return self._safe_value(VAR_BLOCK2PRICE, float)
+
+    @property
+    def block2_threshold(self):
+        """ The block threshold values for a given period (typically the billing cycle)  """
+        return self._safe_value(VAR_BLOCK2THRESHOLD, float)
+
+    @property
+    def block3_price(self):
+        """ The price of Energy, Gas, or Water delivered to the premises at a specific price tier  """
+        return self._safe_value(VAR_BLOCK3PRICE, float)
+
+    @property
+    def block3_threshold(self):
+        """ The block threshold values for a given period (typically the billing cycle)  """
+        return self._safe_value(VAR_BLOCK3THRESHOLD, float)
+
+    @property
+    def block4_price(self):
+        """ The price of Energy, Gas, or Water delivered to the premises at a specific price tier  """
+        return self._safe_value(VAR_BLOCK4PRICE, float)
+
+    @property
+    def block4_threshold(self):
+        """ The block threshold values for a given period (typically the billing cycle)  """
+        return self._safe_value(VAR_BLOCK4THRESHOLD, float)
+
+    @property
+    def block5_price(self):
+        """ The price of Energy, Gas, or Water delivered to the premises at a specific price tier  """
+        return self._safe_value(VAR_BLOCK5PRICE, float)
+    
+    @property
+    def block5_threshold(self):
+        """ The block threshold values for a given period (typically the billing cycle)  """
+        return self._safe_value(VAR_BLOCK5THRESHOLD, float)
+
+    @property
+    def block6_price(self):
+        """ The price of Energy, Gas, or Water delivered to the premises at a specific price tier  """
+        return self._safe_value(VAR_BLOCK6PRICE, float)
+
+    @property
+    def block6_threshold(self):
+        """ The block threshold values for a given period (typically the billing cycle)  """
+        return self._safe_value(VAR_BLOCK6THRESHOLD, float)
+
+    @property
+    def block7_price(self):
+        """ The price of Energy, Gas, or Water delivered to the premises at a specific price tier  """
+        return self._safe_value(VAR_BLOCK7PRICE, float)
+
+    @property
+    def block7_threshold(self):
+        """ The block threshold values for a given period (typically the billing cycle)  """
+        return self._safe_value(VAR_BLOCK7THRESHOLD, float)
+
+    @property
+    def block8_price(self):
+        """ The price of Energy, Gas, or Water delivered to the premises at a specific price tier  """
+        return self._safe_value(VAR_BLOCK8PRICE, float)
+
+    @property
+    def block8_threshold(self):
+        """ The block threshold values for a given period (typically the billing cycle)  """
+        return self._safe_value(VAR_BLOCK8THRESHOLD, float)
+
