@@ -130,4 +130,6 @@ def test_meter_8_blocks():
     # Access via named tuple fields
     assert meter.blocks[1].price == 0.132600
     assert meter.blocks[1].threshold == 2354.0
+    assert meter.block2_price == 0.132600
+    assert meter.block2_threshold == 2354.0
 
