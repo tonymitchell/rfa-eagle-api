@@ -58,7 +58,7 @@ class WifiStatus:
     <Key>0123456789abcdef</Key>
     </WiFiStatus>        
     """
-    def __init__(self, enabled = False, type ='', ssid ='', encryption ='', encryption_details ='', channel ='', ip_address = '', key = ''):
+    def __init__(self, enabled = False, type ='', ssid ='', encryption ='', encryption_details ='', channel ='', ip_address = '', key = '', **kwargs):
         self._enabled = enabled
         self._type = type
         self._ssid = ssid
