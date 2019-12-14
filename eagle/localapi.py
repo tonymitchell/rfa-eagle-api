@@ -1,6 +1,6 @@
 #
 # Unofficial client for the Rainforest Automation EAGLE-200 
-#
+# 
 
 from typing import List
 
@@ -55,20 +55,47 @@ def enable_debug_logging():
 class WifiStatus:
     """
     Expected Response:
+    
+    Disabled:
     <WiFiStatus>
     <Enabled>N</Enabled>
     <Type>router</Type>
+    <OperatingState>down</OperatingState>
+    <LastUpTime>never</LastUpTime>
+    <LastUpTimeString>never</LastUpTimeString>
     <SSID>eagle-00beef (router)</SSID>
     <Encryption>psk2</Encryption>
     <EncryptionDetails>none</EncryptionDetails>
     <Channel>unknown</Channel>
     <IpAddress>192.168.7.1</IpAddress>
     <Key>0123456789abcdef</Key>
-    </WiFiStatus>        
+    </WiFiStatus>
+
+    Enabled:
+    <WiFiStatus>
+    <Enabled>Y</Enabled>
+    <Type>client</Type>
+    <OperatingState>up</OperatingState>
+    <LastUpTime>1576300561</LastUpTime>
+    <LastUpTimeString>Sat Dec 14 05:16:01 2019</LastUpTimeString>
+    <SSID>mySSID</SSID>
+    <Encryption>psk2</Encryption>
+    <EncryptionDetails>none</EncryptionDetails>
+    <Channel>11</Channel>
+    <IpAddress>192.168.7.1</IpAddress>
+    <Key>0123456789abcdef</Key>
+    </WiFiStatus>
+
+
     """
-    def __init__(self, enabled = False, type ='', ssid ='', encryption ='', encryption_details ='', channel ='', ip_address = '', key = '', **kwargs):
+    def __init__(self, 
+                 enabled = False, type ='', operating_state='', last_up_time='',
+                 ssid ='', encryption ='', encryption_details ='', channel ='', ip_address = '', key = '',
+                 **kwargs):
         self._enabled = enabled
         self._type = type
+        self._operating_state = operating_state
+        self._last_up_time = last_up_time
         self._ssid = ssid
         self._encryption = encryption
         self._encryption_details = encryption_details
@@ -77,7 +104,7 @@ class WifiStatus:
         self._key = key
 
     def __repr__(self):
-        attrs = ("enabled", "type", "ssid", "encryption", "encryption_details", "channel","ip_address","key")
+        attrs = ("enabled", "type", "operating_state", "last_up_time", "ssid", "encryption", "encryption_details", "channel","ip_address","key")
         args = ", ".join(["%s=%r" % (n, getattr(self, n)) for n in attrs])
         return "%s(%s)" % (self.__class__.__name__, args)
 
@@ -89,6 +116,12 @@ class WifiStatus:
     @property
     def type(self):
         return self._type
+    @property
+    def operating_state(self):
+        return self._operating_state
+    @property
+    def last_up_time(self):
+        return self._last_up_time
     @property
     def ssid(self):
         return self._ssid
@@ -338,9 +371,15 @@ def parse_wifi_status(wifi_status):
 
     # Convert tags to property names
     attributes = {inflection.underscore(x.tag):x.text for x in wifi_status}
-    # Convert enabled to datetime
+    # Convert enabled to boolean
     if 'enabled' in attributes:
         attributes['enabled'] = (attributes['enabled']  == 'Y')
+    # Convert last_contact to datetime
+    if 'last_up_time' in attributes:
+        if attributes['last_up_time'] == 'never':
+            attributes['last_up_time'] = None
+        else:
+            attributes['last_up_time'] = int(attributes['last_up_time'])
 
     return WifiStatus(**attributes)
 

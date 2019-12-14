@@ -5,6 +5,8 @@ def test_wifi_status():
     attributes = {
         'enabled': False,
         'type': 'router',
+        'operating_state': 'down',
+        'last_up_time': None,
         'ssid': 'eagle-00abcd (router)',
         'encryption': 'psk2',
         'encryption_details': 'none',
@@ -15,6 +17,8 @@ def test_wifi_status():
     status = WifiStatus(**attributes)
     assert status.enabled == False
     assert status.type == 'router'
+    assert status.operating_state == 'down'
+    assert status.last_up_time == None
     assert status.ssid == 'eagle-00abcd (router)'
     assert status.encryption == 'psk2'
     assert status.encryption_details == 'none'
@@ -26,6 +30,8 @@ def test_wifi_status_repr():
     attributes = {
         'enabled': False,
         'type': 'router',
+        'operating_state': 'down',
+        'last_up_time': 1576300561,
         'ssid': 'eagle-00abcd (router)',
         'encryption': 'psk2',
         'encryption_details': 'none',
@@ -34,7 +40,7 @@ def test_wifi_status_repr():
         'key': '0000000000000000',
     }
     status = WifiStatus(**attributes)
-    assert repr(status) == "WifiStatus(enabled=False, type='router', ssid='eagle-00abcd (router)', encryption='psk2', encryption_details='none', channel='unknown', ip_address='192.168.7.1', key='0000000000000000')"
+    assert repr(status) == "WifiStatus(enabled=False, type='router', operating_state='down', last_up_time=1576300561, ssid='eagle-00abcd (router)', encryption='psk2', encryption_details='none', channel='unknown', ip_address='192.168.7.1', key='0000000000000000')"
 
 def test_variable_repr():
     variable = Variable('aName', 'aValue', 'theUnits', 'the description')
