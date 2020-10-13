@@ -11,6 +11,10 @@ Unofficial client for Eagle-200 from Rainforest Automation
 
 Provides the ability to query the local API interface of the Eagle-200
 
+**To install the libary**
+::
+  python3 -m pip install rfa-eagle-api
+
 **Example 1. Query and print all variables from device**
 ::
 
